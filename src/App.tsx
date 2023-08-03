@@ -1,14 +1,25 @@
 import { useState } from 'react'
 import './App.css'
 
+interface StoryOption {
+  text: string;
+  to: number;
+  curiosity: boolean;
+}
+
+interface StoryElement {
+  id: number;
+  text: string;
+  question: string;
+  options: StoryOption[];
+}
+
 function App() {
-  const [text, setText] = useState("")
-  const [question, setQuestion] = useState("")
-  const [options, setOptions] = useState([])
+  const [text, setText] = useState<string>("")
+  const [question, setQuestion] = useState<string>("")
+  const [options, setOptions] = useState<StoryOption[]>([])
 
-  const [score, setScore] = useState([])
-
-  let storyData = [
+  let storyData: StoryElement[] = [
     {
       id: 1,
       text: "Před sebou máte řeku v které je dítě a truhla.",
@@ -62,29 +73,30 @@ function App() {
     },
   ]
 
-  function startGame(id = 0){
-    
-    
+  function startGame(id = 0) {
     let searchedElement = storyData.find(element => element.id === id)
-    setText(searchedElement.text)
-    setQuestion(searchedElement.question)
-    setOptions(searchedElement.options)
+    if (searchedElement) {
+      setText(searchedElement.text);
+      setQuestion(searchedElement.question);
+      setOptions(searchedElement.options);
+    } else {
+      // Handle the case when searchedElement is not found (optional)
+      console.log("Story element not found.");
+    }
   }
 
   return (
-    
     <div>
-      <button onClick={()=>startGame(1)}>Start game</button>
+      <button onClick={() => startGame(1)}>Start game</button>
       <h2>Gamebook</h2>
       <p>{text}</p>
-      <p style={{fontWeight: "bold"}}>{question}</p>
+      <p style={{ fontWeight: "bold" }}>{question}</p>
 
       <div className='container'>
-      {options.map((option, index)  => (
-          <button key={index} onClick={()=>startGame(option.to)}>{option.text}</button>
-      ))}
+        {options.map((option, index) => (
+          <button key={index} onClick={() => startGame(option?.to)}>{option?.text}</button>
+        ))}
       </div>
-
     </div>
   )
 }
